@@ -1,0 +1,1 @@
+(self.webpackChunkgolang=self.webpackChunkgolang||[]).push([[398],{905:function(l){"use strict";l.exports=JSON.parse('{"allTagsPath":"/golearn/blog/tags","slug":"hello","name":"hello","count":2,"permalink":"/golearn/blog/tags/hello"}')}}]);

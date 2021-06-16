@@ -1,0 +1,1 @@
+(self.webpackChunkgolang=self.webpackChunkgolang||[]).push([[948],{6353:function(e){"use strict";e.exports=JSON.parse('{"title":"Recent posts","items":[{"title":"Welcome","permalink":"/golearn/blog/welcome"},{"title":"Hello","permalink":"/golearn/blog/hello-world"},{"title":"Hola","permalink":"/golearn/blog/hola"}]}')}}]);
