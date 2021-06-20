@@ -1,11 +1,22 @@
 package main
 
 import (
+	"flag"
 	"log"
 	"net/http"
 )
 
 func main() {
+	// Define a new command-line flag with the name 'addr'.
+	addr := flag.String("addr", ":4000", "HTTP network address")
+
+	// flag.Parse() function to parse the command-line
+	// 	- In the command-line flag value and assigns it to the addr variable.
+	// 	- You need to call this *before* you use the addr variable
+	// 	- Otherwise it will always contain the default value of ":4000".
+	// 	- If any err encountered the application will be terminated.
+	flag.Parse()
+
 	// Use the http.NewServeMux() function to initialize a new servemux.
 	// Go’s servemux supports two different types of URL patterns:
 	//  - fixed paths which don’t end with a trailing slash
@@ -67,7 +78,7 @@ func main() {
 	mux.HandleFunc("/alo", showAlochym)
 
 	// Log the out put to console
-	log.Println("Starting server on :4000")
+	log.Printf("Starting server on %s", *addr)
 
 	// Use the http.ListenAndServe() function to start a new web server.
 	// We pas two parameters:
@@ -77,7 +88,7 @@ func main() {
 	// Behind the scenes, these functions register their routes
 	// with something called the DefaultServeMux
 	// http.ListenAndServe(":4000", nil)
-	err := http.ListenAndServe(":4000", mux)
+	err := http.ListenAndServe(*addr, mux)
 
 	// If http.ListenAndServe() returns an er
 	// The log.Fatal() function will also call os.Exit(1) after writing the message.
