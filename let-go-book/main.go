@@ -45,7 +45,7 @@ func main() {
 
 	// Request URL paths are automatically sanitized.
 	// If the request path contains:
-	//  - any "." or ".." elements
+	//  - ".." elements
 	//  - repeated slashes - "//",
 	// it will automatically redirect the user to an equivalent clean URL.
 	// For example,
