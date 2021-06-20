@@ -15,6 +15,9 @@
 To run a program
     - go run cmd/web/*
     - go run cmd/web/* -addr=":9999" // if using flag
+    - go run cmd/web/* >>/tmp/info.log 2>>/tmp/error.log
+        - redirect info log to /tmp/info.log
+        - redirect error log to /tmp/error.log
 ```
 
 1. The cmd directory will contain the ***application-specific*** code for the executable applications in the project. For now we’ll have just one executable application — the web application — which will live under the cmd/web directory.

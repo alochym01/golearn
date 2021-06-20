@@ -4,11 +4,20 @@ import (
 	"flag"
 	"log"
 	"net/http"
+	"os"
 )
+
+// type Config struct {
+// 	Addr      string
+// 	StaticDir string
+// }
 
 func main() {
 	// Define a new command-line flag with the name 'addr'.
 	addr := flag.String("addr", ":4000", "HTTP network address")
+	// cfg := new(Config)
+	// flag.StringVar(&cfg.Addr, "addr", ":4000", "HTTP network address")
+	// flag.StringVar(&cfg.StaticDir, "static-dir", "./ui/static", "Path to static asset")
 
 	// flag.Parse() function to parse the command-line
 	// 	- In the command-line flag value and assigns it to the addr variable.
@@ -16,6 +25,17 @@ func main() {
 	// 	- Otherwise it will always contain the default value of ":4000".
 	// 	- If any err encountered the application will be terminated.
 	flag.Parse()
+
+	// Use log.New() to create a logger for writing information messages. This
+	// three parameters:
+	// 	- the destination to write the logs to (os.Stdout).
+	// 	- the start prefix for message (INFO followed by a tab).
+	// 	- additional information to include (local date and local time)
+	infoLog := log.New(os.Stdout, "INFO\t", log.Ldate|log.Ltime)
+
+	// Create a logger for writing error messages in the same way:
+	// 	- use the log.Lshortfile flag to include file name and line number to the err log.
+	errorLog := log.New(os.Stderr, "ERROR\t", log.Ldate|log.Ltime|log.Lshortfile)
 
 	// Use the http.NewServeMux() function to initialize a new servemux.
 	// Go’s servemux supports two different types of URL patterns:
@@ -78,7 +98,7 @@ func main() {
 	mux.HandleFunc("/alo", showAlochym)
 
 	// Log the out put to console
-	log.Printf("Starting server on %s", *addr)
+	infoLog.Printf("Starting server on %s", *addr)
 
 	// Use the http.ListenAndServe() function to start a new web server.
 	// We pas two parameters:
@@ -93,5 +113,5 @@ func main() {
 	// If http.ListenAndServe() returns an er
 	// The log.Fatal() function will also call os.Exit(1) after writing the message.
 	// causing the application to immediately exit.
-	log.Fatal(err)
+	errorLog.Fatal(err)
 }
