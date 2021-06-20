@@ -2,6 +2,8 @@ package main
 
 import (
 	"fmt"
+	"html/template"
+	"log"
 	"net/http"
 	"strconv"
 )
@@ -21,7 +23,35 @@ func home(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	w.Write([]byte("Hello from Snippetbox"))
+	// Use the template.ParseFiles() function to read the template file into a template set.
+	// If there's an error
+	// 	- We log the detailed error message
+	// 	- Using http.Error() function to send a generic 500 Internal Server Error
+
+	// It’s important to point out that the file path
+	// 	- template.ParseFiles() function must either be
+	// 		- relative to your current working directory, or an absolute path.
+	// We use the path relative to the root of the project directory.
+	ts, err := template.ParseFiles("./ui/html/home.page.tmpl")
+
+	if err != nil {
+		log.Println(err.Error())
+		http.Error(w, "Internal Server Error", 500)
+
+		// using return to exit home function
+		return
+	}
+
+	// We then use the Execute() method
+	// 	- To write the template content as the response body.
+	// 	- The last parameter to Execute() represents dynamic data that we want to pass in,
+	// which for now we'll leave as nil.
+	err = ts.Execute(w, nil)
+
+	if err != nil {
+		log.Println(err.Error())
+		http.Error(w, "Internal Server Error", 500)
+	}
 }
 
 func showAlochym(w http.ResponseWriter, r *http.Request) {
