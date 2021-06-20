@@ -21,3 +21,40 @@
 1. It gives a clean separation between Go and non-Go assets. All the Go code we write will live exclusively under the cmd and pkg directories, leaving the project root free to hold non-Go assets like UI files, makefiles and module definitions (including our go.mod file). This can make things easier to manage when it comes to building and deploying your application in the future.
 1. It scales really nicely if you want to add another executable application to your project. For example, you might want to add a CLI (Command Line Interface) to automate some administrative tasks in the future. With this structure, you could create this CLI application
 under cmd/cli and it will be able to import and reuse all the code you’ve written under the pkg directory.
+
+### Using http.Handler Interface
+1. http.Handler define
+   ```go
+    type Handler interface {
+        ServeHTTP(ResponseWriter, *Request)
+    }
+   ```
+1. This basically means that to be a handler an object must have a ServeHTTP() method with the exact signature
+1. The simplest form a handler
+    ```go
+    // in this case it’s a home struct.
+    // but it could equally be a string or function or anything else.
+    type home struct {}
+
+    // implemented a method with the signature ServeHTTP
+    func (h *home) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+        w.Write([]byte("This is my home page"))
+    }
+
+    // register this with a servemux using the Handle method
+    mux := http.NewServeMux()
+    mux.Handle("/", &home{})
+    ```
+### Using Handler Functions
+1. Create a normal function
+    ```go
+    // home doesn’t have a ServeHTTP() method.
+    func home(w http.ResponseWriter, r *http.Request) {
+        w.Write([]byte("This is my home page"))
+    }
+
+    mux := http.NewServeMux()
+    // we need to transform it into a handler using the http.HandlerFunc() adapter
+    // The http.HandlerFunc() adapter works by automatically adding a ServeHTTP() method to the home function
+    mux.Handle("/", http.HandlerFunc(home)) // or mux.HandleFunc("/", home)
+    ```
