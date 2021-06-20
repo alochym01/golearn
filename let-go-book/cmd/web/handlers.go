@@ -28,11 +28,20 @@ func home(w http.ResponseWriter, r *http.Request) {
 	// 	- We log the detailed error message
 	// 	- Using http.Error() function to send a generic 500 Internal Server Error
 
+	// Initialize a slice containing the paths to the two files.
+	// The order should be
+	// 	- home.page.tmpl file must be the *first* file in the slice.
+	// 	- base.layout.tmpl
+	files := []string{
+		"./ui/html/home.page.tmpl",
+		"./ui/html/base.layout.tmpl",
+	}
+
 	// It’s important to point out that the file path
 	// 	- template.ParseFiles() function must either be
 	// 		- relative to your current working directory, or an absolute path.
 	// We use the path relative to the root of the project directory.
-	ts, err := template.ParseFiles("./ui/html/home.page.tmpl")
+	ts, err := template.ParseFiles(files...)
 
 	if err != nil {
 		log.Println(err.Error())

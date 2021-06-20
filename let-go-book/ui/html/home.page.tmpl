@@ -1,28 +1,8 @@
-<!doctype html>
-<html lang='en'>
+{{template "base" .}}
 
-<!--
-    A quick note on naming conventions:
-    Throughout this book we’ll use the convention <name>.<role>.tmpl for naming template files
-    where <role> is either page, partial or layout
--->
+{{define "title"}}Home{{end}}
 
-<head>
-    <meta charset='utf-8'>
-    <title>Home - Snippetbox</title>
-</head>
-
-<body>
-    <header>
-        <h1><a href='/'>Snippetbox</a></h1>
-    </header>
-    <nav>
-        <a href="/">Home</a>
-    </nav>
-    <section>
-        <h2>Latest Snippets</h2>
-        <p>There's nothing to see here yet!</p>
-    </section>
-</body>
-
-</html>
+{{define "body"}}
+    <h2>Latest Snippets</h2>
+    <p>There's nothing to see here yet!</p>
+{{end}}
