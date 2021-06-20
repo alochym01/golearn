@@ -52,7 +52,19 @@ func main() {
 	mux.HandleFunc("/snippet", showSnippet)
 	mux.HandleFunc("/snippet/create", createSnippet)
 
+	// func (mux *ServeMux) HandleFunc(pattern string, handler func(ResponseWriter, *Request))
 	mux.HandleFunc("/alo", showAlochym)
+
+	// We use the http.FileServer() to serve static files or using Nginx web server
+	// Create a file server which serves files out of the "./ui/static"
+	// The path given to the http.Dir function is relative to root directory.
+	// func (mux *ServeMux) Handle(pattern string, handler Handler)
+	fileServer := http.FileServer(http.Dir("./ui/static/"))
+
+	// Use the mux.Handle() function to register the file server as the handler
+	// All URL paths that start with "/static/" which are sent to fileserver
+	// For matching paths we remove "/static" prefix before the request to the file server.
+	mux.Handle("/static/", http.StripPrefix("/static", fileServer))
 
 	// Log the out put to console
 	log.Println("Starting server on :4000")
