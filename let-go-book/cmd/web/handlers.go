@@ -16,7 +16,10 @@ func (app *application) home(w http.ResponseWriter, r *http.Request) {
 	// else
 	//  - return Hello from Snippetbox
 	if r.URL.Path != "/" {
-		http.NotFound(w, r)
+		// http.NotFound(w, r)
+
+		// using Helper function
+		app.notFound(w)
 
 		// using return to exit home function
 		return
@@ -46,9 +49,13 @@ func (app *application) home(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		// log.Println(err.Error())
 
+		// http.Error(w, "Internal Server Error", 500)
+
 		// using dependency inject errorLog from app
-		app.errorLog.Println(err.Error())
-		http.Error(w, "Internal Server Error", 500)
+		// app.errorLog.Println(err.Error())
+
+		// using Helper function
+		app.serverError(w, err)
 
 		// using return to exit home function
 		return
@@ -62,9 +69,13 @@ func (app *application) home(w http.ResponseWriter, r *http.Request) {
 
 	if err != nil {
 		// log.Println(err.Error())
+		// http.Error(w, "Internal Server Error", 500)
+
 		// using dependency inject errorLog from app
-		app.errorLog.Println(err.Error())
-		http.Error(w, "Internal Server Error", 500)
+		// app.errorLog.Println(err.Error())
+
+		// using Helper function
+		app.serverError(w, err)
 	}
 }
 
@@ -80,7 +91,10 @@ func (app *application) showAlochym(w http.ResponseWriter, r *http.Request) {
 	id, err := strconv.Atoi(r.URL.Query().Get("id"))
 	if err != nil || id < 1 {
 		fmt.Println(id)
-		http.NotFound(w, r)
+		// http.NotFound(w, r)
+
+		// using Helper function
+		app.notFound(w)
 
 		// using return to exit showAlochym function
 		return
@@ -103,7 +117,10 @@ func (app *application) showSnippet(w http.ResponseWriter, r *http.Request) {
 		// If you want to send a non-200 status code and a plain-text response body
 		// Use the http.Error() function
 		//  - To send a 405 status code and "Method Not Allowed" string as the response body.
-		http.Error(w, "Method Not Allowed", 405)
+		// http.Error(w, "Method Not Allowed", 405)
+
+		// using Helper function
+		app.clientError(w, http.StatusMethodNotAllowed)
 
 		// using return to exit showSnippet function
 		return
@@ -112,7 +129,7 @@ func (app *application) showSnippet(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("Show Snippetbox"))
 }
 
-func createSnippet(w http.ResponseWriter, r *http.Request) {
+func (app *application) createSnippet(w http.ResponseWriter, r *http.Request) {
 	// Use r.Method to check whether the request is using POST or not.
 	// If it's not
 	//  - Use the w.WriteHeader() method to send
@@ -130,10 +147,13 @@ func createSnippet(w http.ResponseWriter, r *http.Request) {
 
 		// if you want to send a non-200 status code,
 		// you must call w.WriteHeader() before any call to w.Write().
-		w.WriteHeader(405)
+		// w.WriteHeader(405)
 
 		// w.Write() will automatically send a 200 OK status code to the user
-		w.Write([]byte("Method Not Allowed"))
+		// w.Write([]byte("Method Not Allowed"))
+
+		// using Helper function
+		app.clientError(w, http.StatusMethodNotAllowed)
 
 		// using return to exit createSnippet function
 		return
