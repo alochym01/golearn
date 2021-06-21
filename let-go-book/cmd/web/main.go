@@ -5,6 +5,9 @@ import (
 	"log"
 	"net/http"
 	"os"
+
+	"database/sql"                     // New import
+	_ "github.com/go-sql-driver/mysql" // New import
 )
 
 type application struct {
@@ -16,6 +19,9 @@ func main() {
 	//						FLAG
 	// Define a new command-line flag with the name 'addr'.
 	addr := flag.String("addr", ":4000", "HTTP network address")
+
+	// database info
+	dsn := flag.String("dsn", "web:pass@/snippetbox?parseTime=true", "MySQL database")
 
 	// flag.Parse() function to parse the command-line
 	// 	- In the command-line flag value and assigns it to the addr variable.
@@ -57,6 +63,16 @@ func main() {
 		errorLog: errorLog,
 		infoLog:  infoLog,
 	}
+
+	// 						MYSQL
+	db, err := openDB(*dsn)
+	if err != nil {
+		errorLog.Fatal(err)
+	}
+
+	// We also defer a call to db.Close(), so that the connection pool is closed
+	// before the main() function exits.
+	defer db.Close()
 
 	//						Go SERVEMUX
 	// Use the http.NewServeMux() function to initialize a new servemux.
@@ -145,10 +161,21 @@ func main() {
 	// with something called the DefaultServeMux
 	// http.ListenAndServe(":4000", nil)
 	// err := http.ListenAndServe(*addr, mux)
-	err := srv.ListenAndServe()
+	err = srv.ListenAndServe()
 
 	// If http.ListenAndServe() returns an er
 	// The log.Fatal() function will also call os.Exit(1) after writing the message.
 	// causing the application to immediately exit.
 	errorLog.Fatal(err)
+}
+
+func openDB(dsn string) (*sql.DB, error) {
+	db, err := sql.Open("mysql", dsn)
+	if err != nil {
+		return nil, err
+	}
+	if err = db.Ping(); err != nil {
+		return nil, err
+	}
+	return db, nil
 }
