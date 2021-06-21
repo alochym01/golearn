@@ -34,7 +34,7 @@ func main() {
 
 	// Create a logger for writing error messages in the same way:
 	// 	- use the log.Lshortfile flag to include file name and line number to the err log.
-	errorLog := log.New(os.Stderr, "ERROR\t", log.Ldate|log.Ltime|log.Lshortfile)
+	errorLog := log.New(os.Stderr, "ERROR\t", log.Ldate|log.Ltime|log.Llongfile)
 
 	// infoLog with file example
 	// f, err := os.OpenFile("/tmp/info.log", os.O_RDWR|os.O_CREATE, 0666)
