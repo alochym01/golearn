@@ -7,6 +7,11 @@ import (
 	"os"
 )
 
+type application struct {
+	errorLog *log.Logger
+	infoLog  *log.Logger
+}
+
 func main() {
 	//						FLAG
 	// Define a new command-line flag with the name 'addr'.
@@ -31,6 +36,11 @@ func main() {
 	// 	- use the log.Lshortfile flag to include file name and line number to the err log.
 	errorLog := log.New(os.Stderr, "ERROR\t", log.Ldate|log.Ltime|log.Lshortfile)
 
+	// 						DEPENDENCY INJECTION
+	app := &application{
+		errorLog: errorLog,
+		infoLog:  infoLog,
+	}
 	// infoLog with file example
 	// f, err := os.OpenFile("/tmp/info.log", os.O_RDWR|os.O_CREATE, 0666)
 	// if err != nil {
@@ -77,7 +87,7 @@ func main() {
 	//  - example: "/" or "/static/**" => a wildcard at the end
 
 	// register the home function as the handler for the "/" URL pattern.
-	mux.HandleFunc("/", home)
+	mux.HandleFunc("/", app.home)
 
 	// Mux subtree paths
 	// If a subtree path has been registered and a request is received for that
@@ -87,7 +97,7 @@ func main() {
 	// For example,
 	//  - if you have registered the subtree path /alochym/.
 	//  - any request to /foo will be redirected to /alochym/. -> curl -L localhost:4000/alochym
-	mux.HandleFunc("/alo/", showAlochym)
+	mux.HandleFunc("/alo/", app.showAlochym)
 
 	// We use the http.FileServer() to serve static files or using Nginx web server
 	// Create a file server which serves files out of the "./ui/static"
@@ -102,11 +112,11 @@ func main() {
 
 	// Mux fixed paths
 	//  - the request URL path exactly matches the fixed path
-	mux.HandleFunc("/snippet", showSnippet)
+	mux.HandleFunc("/snippet", app.showSnippet)
 	mux.HandleFunc("/snippet/create", createSnippet)
 
 	// func (mux *ServeMux) HandleFunc(pattern string, handler func(ResponseWriter, *Request))
-	mux.HandleFunc("/alo", showAlochym)
+	mux.HandleFunc("/alo", app.showAlochym)
 
 	// Initialize a new http.Server struct.
 	// We set

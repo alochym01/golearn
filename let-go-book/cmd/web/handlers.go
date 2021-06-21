@@ -3,14 +3,13 @@ package main
 import (
 	"fmt"
 	"html/template"
-	"log"
 	"net/http"
 	"strconv"
 )
 
 // Define a home handler function which writes a byte slice containing
 // "Hello from Snippetbox" as the response body.
-func home(w http.ResponseWriter, r *http.Request) {
+func (app *application) home(w http.ResponseWriter, r *http.Request) {
 	// Check if the current request URL path exactly matches "/".
 	// If
 	//  - it doesn't the http.NotFound() function to send a 404 response to the client.
@@ -45,7 +44,10 @@ func home(w http.ResponseWriter, r *http.Request) {
 	ts, err := template.ParseFiles(files...)
 
 	if err != nil {
-		log.Println(err.Error())
+		// log.Println(err.Error())
+
+		// using dependency inject errorLog from app
+		app.errorLog.Println(err.Error())
 		http.Error(w, "Internal Server Error", 500)
 
 		// using return to exit home function
@@ -59,12 +61,14 @@ func home(w http.ResponseWriter, r *http.Request) {
 	err = ts.Execute(w, nil)
 
 	if err != nil {
-		log.Println(err.Error())
+		// log.Println(err.Error())
+		// using dependency inject errorLog from app
+		app.errorLog.Println(err.Error())
 		http.Error(w, "Internal Server Error", 500)
 	}
 }
 
-func showAlochym(w http.ResponseWriter, r *http.Request) {
+func (app *application) showAlochym(w http.ResponseWriter, r *http.Request) {
 	// URL Query Strings -> /alochym?id=1
 	// r.URL.Query().Get(id):
 	// 	- Always return a string value for a parameter
@@ -87,7 +91,7 @@ func showAlochym(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "Display a specific snippet with ID %d...", id)
 }
 
-func showSnippet(w http.ResponseWriter, r *http.Request) {
+func (app *application) showSnippet(w http.ResponseWriter, r *http.Request) {
 	if r.Method != "GET" {
 		w.Header().Set("Allow", "GET")
 
