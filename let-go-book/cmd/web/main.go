@@ -7,17 +7,10 @@ import (
 	"os"
 )
 
-// type Config struct {
-// 	Addr      string
-// 	StaticDir string
-// }
-
 func main() {
+	//						FLAG
 	// Define a new command-line flag with the name 'addr'.
 	addr := flag.String("addr", ":4000", "HTTP network address")
-	// cfg := new(Config)
-	// flag.StringVar(&cfg.Addr, "addr", ":4000", "HTTP network address")
-	// flag.StringVar(&cfg.StaticDir, "static-dir", "./ui/static", "Path to static asset")
 
 	// flag.Parse() function to parse the command-line
 	// 	- In the command-line flag value and assigns it to the addr variable.
@@ -26,6 +19,7 @@ func main() {
 	// 	- If any err encountered the application will be terminated.
 	flag.Parse()
 
+	//						LOG
 	// Use log.New() to create a logger for writing information messages. This
 	// three parameters:
 	// 	- the destination to write the logs to (os.Stdout).
@@ -37,6 +31,23 @@ func main() {
 	// 	- use the log.Lshortfile flag to include file name and line number to the err log.
 	errorLog := log.New(os.Stderr, "ERROR\t", log.Ldate|log.Ltime|log.Lshortfile)
 
+	// infoLog with file example
+	// f, err := os.OpenFile("/tmp/info.log", os.O_RDWR|os.O_CREATE, 0666)
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
+	// defer f.Close()
+	// infoLog := log.New(f, "INFO\t", log.Ldate|log.Ltime)
+
+	// errorLog with file example
+	// f, err = os.OpenFile("/tmp/error.log", os.O_RDWR|os.O_CREATE, 0666)
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
+	// defer f.Close()
+	// errorLog := log.New(f, "ERROR\t", log.Ldate|log.Ltime)
+
+	//						Go SERVEMUX
 	// Use the http.NewServeMux() function to initialize a new servemux.
 	// Go’s servemux supports two different types of URL patterns:
 	//  - fixed paths which don’t end with a trailing slash
@@ -97,6 +108,17 @@ func main() {
 	// func (mux *ServeMux) HandleFunc(pattern string, handler func(ResponseWriter, *Request))
 	mux.HandleFunc("/alo", showAlochym)
 
+	// Initialize a new http.Server struct.
+	// We set
+	// 	- The Addr
+	// 	- Handler fields
+	// 	- The ErrorLog field
+	srv := &http.Server{
+		Addr:     *addr,
+		ErrorLog: errorLog, // use custom errorlog
+		Handler:  mux,
+	}
+
 	// Log the out put to console
 	infoLog.Printf("Starting server on %s", *addr)
 
@@ -108,7 +130,8 @@ func main() {
 	// Behind the scenes, these functions register their routes
 	// with something called the DefaultServeMux
 	// http.ListenAndServe(":4000", nil)
-	err := http.ListenAndServe(*addr, mux)
+	// err := http.ListenAndServe(*addr, mux)
+	err := srv.ListenAndServe()
 
 	// If http.ListenAndServe() returns an er
 	// The log.Fatal() function will also call os.Exit(1) after writing the message.
