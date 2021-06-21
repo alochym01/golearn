@@ -36,11 +36,6 @@ func main() {
 	// 	- use the log.Lshortfile flag to include file name and line number to the err log.
 	errorLog := log.New(os.Stderr, "ERROR\t", log.Ldate|log.Ltime|log.Lshortfile)
 
-	// 						DEPENDENCY INJECTION
-	app := &application{
-		errorLog: errorLog,
-		infoLog:  infoLog,
-	}
 	// infoLog with file example
 	// f, err := os.OpenFile("/tmp/info.log", os.O_RDWR|os.O_CREATE, 0666)
 	// if err != nil {
@@ -56,6 +51,12 @@ func main() {
 	// }
 	// defer f.Close()
 	// errorLog := log.New(f, "ERROR\t", log.Ldate|log.Ltime)
+
+	// 						DEPENDENCY INJECTION
+	app := &application{
+		errorLog: errorLog,
+		infoLog:  infoLog,
+	}
 
 	//						Go SERVEMUX
 	// Use the http.NewServeMux() function to initialize a new servemux.
