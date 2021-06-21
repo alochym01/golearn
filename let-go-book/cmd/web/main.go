@@ -68,7 +68,7 @@ func main() {
 	// Go servemux
 	//  - it doesn’t support semantic URLs with variables in them
 	//  - it doesn’t support regexp-based patterns
-	mux := http.NewServeMux()
+	// mux := http.NewServeMux()
 
 	// Request URL paths are automatically sanitized.
 	// If the request path contains:
@@ -88,7 +88,7 @@ func main() {
 	//  - example: "/" or "/static/**" => a wildcard at the end
 
 	// register the home function as the handler for the "/" URL pattern.
-	mux.HandleFunc("/", app.home)
+	// mux.HandleFunc("/", app.home)
 
 	// Mux subtree paths
 	// If a subtree path has been registered and a request is received for that
@@ -98,26 +98,26 @@ func main() {
 	// For example,
 	//  - if you have registered the subtree path /alochym/.
 	//  - any request to /foo will be redirected to /alochym/. -> curl -L localhost:4000/alochym
-	mux.HandleFunc("/alo/", app.showAlochym)
+	// mux.HandleFunc("/alo/", app.showAlochym)
 
 	// We use the http.FileServer() to serve static files or using Nginx web server
 	// Create a file server which serves files out of the "./ui/static"
 	// The path given to the http.Dir function is relative to root directory.
 	// func (mux *ServeMux) Handle(pattern string, handler Handler)
-	fileServer := http.FileServer(http.Dir("./ui/static/"))
+	// fileServer := http.FileServer(http.Dir("./ui/static/"))
 
 	// Use the mux.Handle() function to register the file server as the handler
 	// All URL paths that start with "/static/" which are sent to fileserver
 	// For matching paths we remove "/static" prefix before the request to the file server.
-	mux.Handle("/static/", http.StripPrefix("/static", fileServer))
+	// mux.Handle("/static/", http.StripPrefix("/static", fileServer))
 
 	// Mux fixed paths
 	//  - the request URL path exactly matches the fixed path
-	mux.HandleFunc("/snippet", app.showSnippet)
-	mux.HandleFunc("/snippet/create", app.createSnippet)
+	// mux.HandleFunc("/snippet", app.showSnippet)
+	// mux.HandleFunc("/snippet/create", app.createSnippet)
 
 	// func (mux *ServeMux) HandleFunc(pattern string, handler func(ResponseWriter, *Request))
-	mux.HandleFunc("/alo", app.showAlochym)
+	// mux.HandleFunc("/alo", app.showAlochym)
 
 	// Initialize a new http.Server struct.
 	// We set
@@ -127,7 +127,10 @@ func main() {
 	srv := &http.Server{
 		Addr:     *addr,
 		ErrorLog: errorLog, // use custom errorlog
-		Handler:  mux,
+		// Handler:  mux,
+
+		// isolate route to cmd/we/routes.go file
+		Handler: app.routes(),
 	}
 
 	// Log the out put to console
