@@ -114,7 +114,7 @@ func main() {
 	// Mux fixed paths
 	//  - the request URL path exactly matches the fixed path
 	mux.HandleFunc("/snippet", app.showSnippet)
-	mux.HandleFunc("/snippet/create", createSnippet)
+	mux.HandleFunc("/snippet/create", app.createSnippet)
 
 	// func (mux *ServeMux) HandleFunc(pattern string, handler func(ResponseWriter, *Request))
 	mux.HandleFunc("/alo", app.showAlochym)
