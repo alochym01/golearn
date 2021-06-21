@@ -6,13 +6,17 @@ import (
 	"net/http"
 	"os"
 
-	"database/sql"                     // New import
+	"database/sql" // New import
+
 	_ "github.com/go-sql-driver/mysql" // New import
+
+	"github.com/alochym01/golearn/pkg/models/mysql" // using our mysql custom
 )
 
 type application struct {
 	errorLog *log.Logger
 	infoLog  *log.Logger
+	snippets *mysql.SnippetModel // inject it as a dependency via the application struct
 }
 
 func main() {
@@ -21,7 +25,7 @@ func main() {
 	addr := flag.String("addr", ":4000", "HTTP network address")
 
 	// database info
-	dsn := flag.String("dsn", "web:pass@/snippetbox?parseTime=true", "MySQL database")
+	dsn := flag.String("dsn", "root:new_password@/snippetbox?parseTime=true", "MySQL database")
 
 	// flag.Parse() function to parse the command-line
 	// 	- In the command-line flag value and assigns it to the addr variable.
@@ -58,12 +62,6 @@ func main() {
 	// defer f.Close()
 	// errorLog := log.New(f, "ERROR\t", log.Ldate|log.Ltime)
 
-	// 						DEPENDENCY INJECTION
-	app := &application{
-		errorLog: errorLog,
-		infoLog:  infoLog,
-	}
-
 	// 						MYSQL
 	db, err := openDB(*dsn)
 	if err != nil {
@@ -73,6 +71,13 @@ func main() {
 	// We also defer a call to db.Close(), so that the connection pool is closed
 	// before the main() function exits.
 	defer db.Close()
+
+	// 						DEPENDENCY INJECTION
+	app := &application{
+		errorLog: errorLog,                    // using log
+		infoLog:  infoLog,                     // using log
+		snippets: &mysql.SnippetModel{DB: db}, // Initialize a mysql.SnippetModel dependency injection
+	}
 
 	//						Go SERVEMUX
 	// Use the http.NewServeMux() function to initialize a new servemux.
