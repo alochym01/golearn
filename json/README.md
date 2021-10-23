@@ -2,6 +2,7 @@
 ## Marshal a struct into JSON Object in GO
 - Convert a struct into JSON Object for debug
 ### JSON Encode in GO
+- [Code sample](./jsonmarshal.go)
 - How to
     1. Declare a Movie struct
         ```go
@@ -59,6 +60,7 @@
 ### UnMarshal using Interface Object
 - We access to JSON attribute by using key/value
 #### JSON Decode in GO
+- [Code sample](./jsoninterfaceunmarshal.go)
 - How to
     1. Declare an empty interface
         ```go
@@ -113,6 +115,7 @@
 - We access to a struct attribute by using `.` operator
 - We can change a struct attribute's name in JSON reponse - by using `JSON tags`
 #### JSON Decode in GO
+- [Code sample](./jsonunmarshal.go)
 - How to
     1. Declare a Movie struct and Movie method
         ```go
