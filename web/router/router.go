@@ -13,14 +13,17 @@ import (
 func Start() {
 	router := mux.NewRouter()
 
-	// Define CustomerRepositoryAdapterMock Handler
-	aMockHandler := storage.NewCustomerRepositoryAdapterMock()
+	// Define CustomerRepositoryAdapterMock Adapter
+	aMockAdapter := storage.NewCustomerRepositoryAdapterMock()
 	// Define Service Handler
-	svcHandler := service.NewCustomerService(aMockHandler)
+	// if any receiver is a point => & symbol
+	svcHandler := service.NewCustomerService(&aMockAdapter)
 	// Define Customer Handler
 	cHandler := handler.NewCustomerHandler(svcHandler)
 
 	router.HandleFunc("/customers", cHandler.GetAllCustomers).Methods(http.MethodGet)
+	router.HandleFunc("/customers/{id:[0-9]+}", cHandler.GetCustomer).Methods(http.MethodGet)
+	router.HandleFunc("/customers", cHandler.CreateCustomer).Methods(http.MethodPost)
 
 	log.Fatal(http.ListenAndServe(":8080", router))
 }
